@@ -1,0 +1,47 @@
+import boto3
+
+def lambda_handler(event, context):
+    lista = [
+        ["2024/01/12", "pix", 23434345, 456783449],
+        ["2024/01/12", "ted", 345, 34556],
+        ["2024/01/12", "boletos", 5666754, 788986],
+        ["2024/01/12", "tef", 13455, 99987],
+        ["2024/01/13", "pix", 43434345, 4567834499],
+        ["2024/01/13", "ted", 445, 345599],
+        ["2024/01/13", "boletos", 4666754, 788999],
+        ["2024/01/13", "tef", 43455, 99999]
+    ]
+
+    for item in lista:
+        data_efetivacao, produto, quantidade, valor = item
+
+        # Enviar dados para CloudWatch
+        enviar_para_cloudwatch(data_efetivacao, produto, quantidade, valor)
+
+def enviar_para_cloudwatch(data_efetivacao, produto, quantidade, valor):
+    cloudwatch = boto3.client('cloudwatch')
+
+    # Enviar quantidade e valor como métricas separadas
+    cloudwatch.put_metric_data(
+        Namespace='Transacoes',
+        MetricData=[
+            {
+                'MetricName': 'Quantidade',
+                'Dimensions': [
+                    {'Name': 'Produto', 'Value': produto},
+                    {'Name': 'DataEfetivacao', 'Value': data_efetivacao},
+                ],
+                'Value': quantidade,
+                'Unit': 'Count'
+            },
+            {
+                'MetricName': 'Valor',
+                'Dimensions': [
+                    {'Name': 'Produto', 'Value': produto},
+                    {'Name': 'DataEfetivacao', 'Value': data_efetivacao},
+                ],
+                'Value': valor,
+                'Unit': 'Count'
+            }
+        ]
+    )
