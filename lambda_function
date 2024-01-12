@@ -45,3 +45,5 @@ def enviar_para_cloudwatch(data_efetivacao, produto, quantidade, valor):
             }
         ]
     )
+
+# "expression": "SELECT SUM(Quantidade) FROM Transacoes WHERE DataEfetivacao = '2024/01/13'", "label": "Quantidade total de transações dia 13/01", "id": "q1", "region": "us-east-1", "period": 5, "stat": "SampleCount"
